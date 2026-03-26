@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat untuk Tessa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 50%, #FFFACD 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #FFFEF2;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #F5E6D3;
+        }
+
+        /* Header surat */
+        .letter-header {
+            background: linear-gradient(135deg, #FF6B8B, #FF3D6A);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .letter-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .letter-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        /* Isi surat */
+        .letter-content {
+            padding: 50px 40px;
+            position: relative;
+            min-height: 600px;
+        }
+
+        /* Efek garis pada kertas surat */
+        .letter-content:before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 40px;
+            right: 40px;
+            bottom: 50px;
+            background: linear-gradient(to bottom, transparent 95%, rgba(255, 107, 139, 0.05) 95%);
+            background-size: 100% 28px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .letter-text {
+            position: relative;
+            z-index: 2;
+            font-size: 1.25rem;
+            line-height: 1.9;
+            color: #5A4A42;
+            white-space: pre-line;
+            animation: fadeIn 2s ease-out;
+        }
+
+        /* Tanda tangan */
+        .signature {
+            text-align: right;
+            margin-top: 60px;
+            padding-right: 40px;
+            font-style: italic;
+            color: #4F46E5;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        /* Tombol kembali */
+        .back-section {
+            text-align: center;
+            padding: 30px 20px 50px;
+        }
+
+        .back-btn {
+            padding: 16px 45px;
+            font-size: 1.3rem;
+            background: linear-gradient(to right, #4F46E5, #3B82F6);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(to right, #3B82F6, #4F46E5);
+        }
+
+        /* Tombol simpan surat */
+        .save-section {
+            text-align: center;
+            padding: 0 20px 30px;
+        }
+
+        .save-btn {
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            background: linear-gradient(to right, #10B981, #0D9668);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(to right, #0D9668, #10B981);
+        }
+
+        .save-btn.saved {
+            background: linear-gradient(to right, #6B7280, #4B5563);
+        }
+
+        .save-btn.saved:hover {
+            background: linear-gradient(to right, #4B5563, #6B7280);
+        }
+
+        /* Hiasan sudut surat */
+        .corner-decoration {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.2;
+        }
+
+        .corner-top-left {
+            top: 20px;
+            left: 20px;
+            border-top: 3px solid #FF6B8B;
+            border-left: 3px solid #FF6B8B;
+        }
+
+        .corner-top-right {
+            top: 20px;
+            right: 20px;
+            border-top: 3px solid #4F46E5;
+            border-right: 3px solid #4F46E5;
+        }
+
+        .corner-bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-bottom: 3px solid #10B981;
+            border-left: 3px solid #10B981;
+        }
+
+        .corner-bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-bottom: 3px solid #F59E0B;
+            border-right: 3px solid #F59E0B;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .letter-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .letter-content {
+                padding: 30px 20px;
+            }
+            
+            .letter-text {
+                font-size: 1.1rem;
+                line-height: 1.7;
+            }
+            
+            .back-btn {
+                padding: 14px 35px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .letter-header {
+                padding: 30px 20px;
+            }
+            
+            .letter-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .letter-header p {
+                font-size: 1.1rem;
+            }
+            
+            .letter-content {
+                padding: 25px 15px;
+            }
+            
+            .letter-text {
+                font-size: 1rem;
+            }
+            
+            .signature {
+                margin-top: 40px;
+                padding-right: 20px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <body>
+            <audio id="bg-music" autoplay loop>
+                <source src="Love me.mp3" type="audio/mpeg">
+            </audio>
+        
+            <div class="container">
+
+
+        <!-- Hiasan sudut -->
+        <div class="corner-decoration corner-top-left"></div>
+        <div class="corner-decoration corner-top-right"></div>
+        <div class="corner-decoration corner-bottom-left"></div>
+        <div class="corner-decoration corner-bottom-right"></div>
+        
+        <!-- Header surat -->
+        <div class="letter-header">
+            <h1>Surat untuk Tessa</h1>
+            <p>Ucapan tulus dari hati untuk hari spesialmu</p>
+        </div>
+        
+        <!-- Isi surat -->
+        <div class="letter-content">
+            <div class="letter-text" id="letterText">
+                Selamat Ulang Tahun, Tessa! 🎂
+
+Di hari yang spesial ini, kami ingin mengucapkan:
+SEMOGA PANJANG UMUR DAN SEHAT SELALU!
+
+Kamu adalah seseorang yang sangat berarti bagi kami.
+Setiap senyummu menghangatkan hati,
+setiap tawamu mencerahkan hari,
+dan setiap kebaikanmu menginspirasi kami.
+
+Di usiamu yang baru ini, semoga:
+- Semua impian dan harapanmu terkabul
+- Kebahagiaan selalu menyertaimu
+- Kesuksesan menjadi sahabat setiamu
+- Kesehatan menjadi tamu tetap di hidupmu
+- Cinta dan kasih sayang mengelilingimu
+
+Terima kasih telah menjadi teman yang luar biasa.
+Kami sangat beruntung mengenalmu.
+
+Selamat merayakan hari spesialmu!
+Semoga tahun ini menjadi tahun terbaik dalam hidupmu.
+Nikmati setiap momen, tertawa lebih banyak,
+dan buat kenangan indah yang tak terlupakan.
+
+Kami selalu ada untukmu,
+hari ini dan selamanya.
+            </div>
+            
+            <div class="signature">
+                Salam Cinta,<br>
+                Lintang Ketceh
+            </div>
+        </div>
+        
+        <!-- Tombol simpan surat -->
+        <div class="save-section">
+            <button class="save-btn" id="saveBtn">
+                <i class="fas fa-heart"></i> Simpan Surat Ini
+            </button>
+        </div>
+        
+        <!-- Tombol kembali -->
+        <div class="back-section">
+            <button class="back-btn" id="backBtn">
+                <i class="fas fa-arrow-left"></i> Kembali ke Halaman Sebelumnya
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elemen DOM
+            const saveBtn = document.getElementById('saveBtn');
+            const backBtn = document.getElementById('backBtn');
+            const letterText = document.getElementById('letterText');
+            
+            // Status
+            let isSaved = false;
+            
+            // Efek ketik untuk teks surat
+            function typeLetter() {
+                const text = letterText.textContent;
+                letterText.textContent = '';
+                
+                let charIndex = 0;
+                const typingSpeed = 15; // milidetik per karakter
+                
+                function typeCharacter() {
+                    if (charIndex < text.length) {
+                        letterText.textContent += text.charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeCharacter, typingSpeed);
+                    }
+                }
+                
+                // Mulai efek ketik setelah halaman dimuat
+                setTimeout(() => {
+                    typeCharacter();
+                }, 500);
+            }
+            
+            // Mulai efek ketik
+            typeLetter();
+            
+            // Event listener untuk tombol simpan
+            saveBtn.addEventListener('click', function() {
+                if (!isSaved) {
+                    // Ubah tampilan tombol
+                    this.innerHTML = '<i class="fas fa-check"></i> Surat Tersimpan!';
+                    this.classList.add('saved');
+                    isSaved = true;
+                    
+                    // Simpan status ke localStorage
+                    localStorage.setItem('tessaLetterSaved', 'true');
+                    
+                    // Tampilkan pesan
+                    setTimeout(() => {
+                        alert('Surat telah disimpan di hatinya Tessa dan di browsermu! 💌');
+                    }, 300);
+                }
+            });
+
+            //musik
+            const bgMusic = document.getElementById("bg-music");
+
+function playMusic() {
+    bgMusic.play().catch(() => {});
+}
+
+window.addEventListener("load", playMusic);
+document.addEventListener("click", playMusic);
+            
+            // Event listener untuk tombol kembali
+            backBtn.addEventListener('click', function() {
+                // Animasi tombol
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kembali...';
+                this.disabled = true;
+                
+                // Setelah 1 detik, kembali ke halaman sebelumnya
+                setTimeout(() => {
+                    window.location.href = "ketiga.html";
+                }, 1000);
+            });
+            
+            // Efek hover pada tombol
+            backBtn.addEventListener('mouseenter', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(-5px)';
+                }
+            });
+            
+            backBtn.addEventListener('mouseleave', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+            
+            saveBtn.addEventListener('mouseenter', function() {
+                if (!isSaved) {
+                    this.style.transform = 'translateY(-3px)';
+                }
+            });
+            
+            saveBtn.addEventListener('mouseleave', function() {
+                if (!isSaved) {
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+            
+            // Cek apakah surat sudah pernah disimpan
+            if (localStorage.getItem('tessaLetterSaved') === 'true') {
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Surat Tersimpan!';
+                saveBtn.classList.add('saved');
+                isSaved = true;
+            }
+        });
+    </script>
+</body>
+</html>

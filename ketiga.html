@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Rahasia untuk Tessa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #87CEEB 0%, #B0E2FF 50%, #E0F7FF 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Background awan */
+        .cloud {
+            position: fixed;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        .cloud:before, .cloud:after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud-1 {
+            width: 200px;
+            height: 80px;
+            top: 50px;
+            left: 5%;
+            animation: floatCloud 60s infinite linear;
+        }
+
+        .cloud-1:before {
+            width: 100px;
+            height: 100px;
+            top: -50px;
+            left: 20px;
+        }
+
+        .cloud-1:after {
+            width: 80px;
+            height: 80px;
+            top: -30px;
+            right: 30px;
+        }
+
+        .cloud-2 {
+            width: 150px;
+            height: 60px;
+            top: 150px;
+            right: 10%;
+            animation: floatCloud 50s infinite linear 10s;
+        }
+
+        .cloud-2:before {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            left: 15px;
+        }
+
+        .cloud-2:after {
+            width: 60px;
+            height: 60px;
+            top: -20px;
+            right: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #1E3A8A;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #4F46E5;
+            font-style: italic;
+        }
+
+        /* Amplop */
+        .letter-scene {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 80px;
+            perspective: 1000px;
+            min-height: 400px;
+        }
+
+        .envelope-container {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            margin-top: 100px;
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+            z-index: 10;
+        }
+
+        .envelope:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .envelope-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF6B8B, #FF3D6A);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 50% 100%, 0% 85%);
+            box-shadow: 0 15px 35px rgba(255, 107, 139, 0.3);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF8FA3, #FF6B8B);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            transform-origin: top;
+            transition: transform 0.5s ease;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        /* Video section */
+        .video-section {
+            margin: 100px 0 60px;
+            text-align: center;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .video-section h2 {
+            font-size: 2.5rem;
+            color: #1E3A8A;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-placeholder {
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: linear-gradient(135deg, #4F46E5, #3B82F6);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .video-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .video-text {
+            font-size: 1.5rem;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        /* Tombol lanjut */
+        .next-section {
+            text-align: center;
+            margin: 60px 0 100px;
+        }
+
+        .next-btn {
+            padding: 18px 50px;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #4F46E5, #3B82F6);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(to right, #3B82F6, #4F46E5);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #1E3A8A;
+            font-size: 1rem;
+            opacity: 0.8;
+            border-top: 1px solid rgba(30, 58, 138, 0.2);
+            margin-top: 50px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        /* Efek balon kecil */
+        .balloon {
+            position: fixed;
+            width: 40px;
+            height: 50px;
+            border-radius: 50%;
+            bottom: -100px;
+            animation: floatBalloon 20s infinite linear;
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        .balloon:before {
+            content: '';
+            position: absolute;
+            width: 1px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.7);
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes floatBalloon {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(10deg); }
+        }
+
+        /* Instruksi */
+        .instruction {
+            text-align: center;
+            margin: 20px 0 40px;
+            color: #4F46E5;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Pesan setelah membuka amplop */
+        .letter-preview {
+            text-align: center;
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .letter-preview.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .letter-preview h3 {
+            color: #1E3A8A;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .open-letter-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(to right, #FF6B8B, #FF3D6A);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(255, 107, 139, 0.3);
+            margin-top: 20px;
+        }
+
+        .open-letter-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 107, 139, 0.4);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .envelope-container {
+                width: 280px;
+                height: 190px;
+            }
+            
+            .video-section h2 {
+                font-size: 2rem;
+            }
+            
+            .video-text {
+                font-size: 1.2rem;
+            }
+            
+            .next-btn {
+                padding: 15px 40px;
+                font-size: 1.3rem;
+            }
+            
+            .open-letter-btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .envelope-container {
+                width: 240px;
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+        <audio id="bg-music" autoplay loop>
+            <source src="message.mp3" type="audio/mpeg">
+        </audio>
+    
+        <div class="container">
+
+    <!-- Awan background -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    
+    <!-- Balon kecil -->
+    <div class="balloon" style="background: linear-gradient(to bottom, #FF6B8B, #FF3D6A); left: 10%; animation-delay: 0s;"></div>
+    <div class="balloon" style="background: linear-gradient(to bottom, #4F46E5, #3B3BC3); left: 30%; animation-delay: 3s;"></div>
+    <div class="balloon" style="background: linear-gradient(to bottom, #10B981, #0D9668); left: 50%; animation-delay: 6s;"></div>
+    <div class="balloon" style="background: linear-gradient(to bottom, #F59E0B, #D97706); left: 70%; animation-delay: 9s;"></div>
+    <div class="balloon" style="background: linear-gradient(to bottom, #8B5CF6, #7C3AED); left: 90%; animation-delay: 12s;"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Surat Rahasia untuk Tessa</h1>
+            <p>Ada pesan spesial yang menantimu di dalam amplop ini</p>
+        </div>
+
+        <!-- Instruksi -->
+        <div class="instruction">
+            <i class="fas fa-mouse-pointer"></i> Klik amplop untuk membuka surat
+        </div>
+        
+        <!-- Scene amplop -->
+        <div class="letter-scene">
+            <div class="envelope-container">
+                <!-- Amplop -->
+                <div class="envelope" id="envelope">
+                    <div class="envelope-body"></div>
+                    <div class="envelope-flap"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pesan setelah membuka amplop -->
+        <div class="letter-preview" id="letterPreview">
+            <h3>Surat Telah Terbuka!</h3>
+            <p>Surat berisi pesan spesial untuk Tessa telah siap dibaca. Klik tombol di bawah untuk membaca surat lengkapnya.</p>
+            <button class="open-letter-btn" id="openLetterBtn">
+                <i class="fas fa-envelope-open-text"></i> Baca Surat Lengkap
+            </button>
+        </div>
+        
+        
+        <!-- Tombol lanjut -->
+        <div class="next-section">
+            <button class="next-btn" id="nextBtn">
+                <i class="fas fa-forward"></i> Lanjut ke Halaman ke-4
+            </button>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            Dibuat dengan cinta untuk hari spesial Tessa ❤️
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elemen DOM
+            const envelope = document.getElementById('envelope');
+            const letterPreview = document.getElementById('letterPreview');
+            const openLetterBtn = document.getElementById('openLetterBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Status
+            let isEnvelopeOpen = false;
+            
+            // Event listener untuk amplop
+            envelope.addEventListener('click', function() {
+                if (!isEnvelopeOpen) {
+                    // Buka amplop
+                    envelope.classList.add('open');
+                    isEnvelopeOpen = true;
+                    
+                    // Tampilkan pesan dan tombol baca surat lengkap
+                    setTimeout(() => {
+                        letterPreview.classList.add('show');
+                        
+                        // Auto scroll ke tombol baca surat
+                        setTimeout(() => {
+                            letterPreview.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'center' 
+                            });
+                        }, 500);
+                    }, 800);
+                }
+            });
+
+            //musik
+            const bgMusic = document.getElementById("bg-music");
+
+            function playMusic() {
+                bgMusic.play().catch(() => {});
+            }
+
+            window.addEventListener("load", playMusic);
+            document.addEventListener("click", playMusic);
+            
+            // Event listener untuk tombol baca surat lengkap
+            openLetterBtn.addEventListener('click', function() {
+                // Animasi tombol
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuka Surat...';
+                this.disabled = true;
+                
+                // Efek konfeti kecil
+                createConfetti();
+                
+                // Setelah 1.5 detik, arahkan ke halaman surat
+                setTimeout(() => {
+                    window.location.href = "surat.html";
+                }, 1500);
+            });
+            
+            // Event listener untuk tombol lanjut
+            nextBtn.addEventListener('click', function() {
+                // Animasi tombol
+                this.style.transform = 'scale(0.95)';
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menuju Halaman 4...';
+                this.disabled = true;
+                
+                // Tambahkan efek konfeti besar
+                createConfetti();
+                
+                // Setelah 2 detik, arahkan ke halaman keempat.html
+                setTimeout(() => {
+                    window.location.href = "keempat.html";
+                }, 2000);
+            });
+            
+            // Fungsi untuk efek konfeti
+            function createConfetti() {
+                const colors = ['#FF6B8B', '#4F46E5', '#10B981', '#F59E0B', '#8B5CF6'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.zIndex = '1000';
+                    confetti.style.opacity = '0.9';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Animasi jatuh
+                    const animation = confetti.animate([
+                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                    ], {
+                        duration: 1000 + Math.random() * 2000,
+                        easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+                    });
+                    
+                    // Hapus confetti setelah animasi selesai
+                    animation.onfinish = () => confetti.remove();
+                }
+            }
+            
+            // Efek hover pada tombol
+            nextBtn.addEventListener('mouseenter', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(-8px) scale(1.05)';
+                }
+            });
+            
+            nextBtn.addEventListener('mouseleave', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+            
+            openLetterBtn.addEventListener('mouseenter', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(-5px)';
+                }
+            });
+            
+            openLetterBtn.addEventListener('mouseleave', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

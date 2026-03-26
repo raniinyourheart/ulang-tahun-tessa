@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Meta viewport sudah optimal untuk mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Happy Birthday Tessa!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Kaushan+Script");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: "Kaushan Script", "Sail", cursive;
+            overflow: hidden;
+            position: fixed; /* Mencegah scroll berlebihan di mobile */
+            -webkit-tap-highlight-color: transparent; /* Hilangkan highlight tap di mobile */
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+            margin: 0;
+        }
+
+        canvas#c {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none; /* Biarkan klik tembus ke tombol */
+        }
+
+        #balloon-container {
+            height: 100vh;
+            width: 100%;
+            padding: 1em;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+            transition: opacity 500ms;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            pointer-events: none; /* Biarkan klik tembus ke tombol */
+        }
+
+        .balloon {
+            height: 125px;
+            width: 105px;
+            border-radius: 75% 75% 70% 70%;
+            position: relative;
+            flex-shrink: 0; /* Mencegah balon mengecil */
+            will-change: transform; /* Optimasi animasi */
+        }
+
+        .balloon:before {
+            content: "";
+            height: 75px;
+            width: 1px;
+            padding: 1px;
+            background-color: #FDFD96;
+            display: block;
+            position: absolute;
+            top: 125px;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+
+        .balloon:after {
+            content: "▲";
+            text-align: center;
+            display: block;
+            position: absolute;
+            color: inherit;
+            top: 120px;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(100vh);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-300vh);
+                opacity: 0;
+            }
+        }
+
+        /* Kontrol tombol - OPTIMASI MOBILE */
+        .controls-container {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            z-index: 10;
+            padding: 0 15px;
+            pointer-events: none; /* Container tidak menerima klik, tombol di dalamnya tetap bisa */
+        }
+
+        .control-btn {
+            padding: 14px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            min-width: 140px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            z-index: 100;
+            position: relative;
+            pointer-events: auto; /* Tombol bisa diklik */
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation; /* Optimasi touch */
+        }
+
+        /* Active state untuk mobile */
+        .control-btn:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+        }
+
+        .btn-music {
+            background: linear-gradient(to right, #FF6B8B, #FF3D6A);
+            color: white;
+        }
+
+        .btn-next {
+            background: linear-gradient(to right, #4F46E5, #3B82F6);
+            color: white;
+        }
+
+        .music-playing {
+            background: linear-gradient(to right, #10B981, #0D9668);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Loading screen - OPTIMASI MOBILE */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: opacity 1s ease;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .loading-text {
+            font-size: clamp(1.8rem, 8vw, 2.5rem);
+            margin-bottom: 20px;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            line-height: 1.2;
+        }
+
+        .loading-subtext {
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            margin-bottom: 30px;
+            opacity: 0.9;
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.5;
+        }
+
+        .spinner {
+            width: min(60px, 15vw);
+            height: min(60px, 15vw);
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #4F46E5;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Pesan ulang tahun - OPTIMASI MOBILE */
+        .birthday-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.6);
+            padding: clamp(20px, 5vw, 30px) clamp(30px, 8vw, 50px);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            max-width: 85%;
+            width: fit-content;
+            opacity: 0;
+            animation: fadeInMessage 2s ease forwards 3s;
+            pointer-events: none; /* Biarkan klik tembus ke tombol */
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .birthday-message h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            line-height: 1.2;
+        }
+
+        .birthday-message p {
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .birthday-message .from {
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            font-style: italic;
+            color: #FFD700;
+        }
+
+        @keyframes fadeInMessage {
+            from { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            to { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Responsive design untuk layar kecil - OPTIMASI MOBILE */
+        @media (max-width: 600px) {
+            .controls-container {
+                flex-direction: column;
+                align-items: center;
+                bottom: 15px;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                width: 90%;
+                max-width: 260px;
+                padding: 14px 20px;
+                font-size: 1.1rem;
+                min-width: auto;
+            }
+            
+            .balloon {
+                height: 100px;
+                width: 84px;
+                transform: scale(0.9); /* Sedikit kecilkan balon di mobile */
+            }
+            
+            .balloon:before {
+                top: 100px;
+                height: 60px;
+            }
+            
+            .balloon:after {
+                top: 96px;
+            }
+        }
+
+        /* Untuk layar sangat kecil (under 360px) */
+        @media (max-width: 360px) {
+            .balloon {
+                height: 80px;
+                width: 67px;
+            }
+            
+            .balloon:before {
+                top: 80px;
+                height: 50px;
+            }
+            
+            .balloon:after {
+                top: 77px;
+                font-size: 12px;
+            }
+            
+            .birthday-message {
+                padding: 15px 20px;
+            }
+        }
+
+        /* Orientasi landscape di mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .controls-container {
+                flex-direction: row;
+                bottom: 10px;
+            }
+            
+            .control-btn {
+                width: auto;
+                min-width: 140px;
+                padding: 10px 15px;
+            }
+            
+            .birthday-message {
+                padding: 15px 25px;
+            }
+            
+            .birthday-message h1 {
+                font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            
+            .birthday-message p {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+            
+            .balloon {
+                height: 70px;
+                width: 59px;
+            }
+            
+            .balloon:before {
+                top: 70px;
+                height: 40px;
+            }
+            
+            .balloon:after {
+                top: 67px;
+            }
+        }
+
+        /* Memastikan konten tetap aman dari notch/status bar */
+        @supports (padding: max(0px)) {
+            .controls-container {
+                padding-left: max(15px, env(safe-area-inset-left));
+                padding-right: max(15px, env(safe-area-inset-right));
+                padding-bottom: max(15px, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Hilangkan outline saat klik di mobile */
+        .control-btn:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen - sudah mobile friendly -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">Loading Celebration...</div>
+        <div class="loading-subtext">Preparing a special birthday surprise for Tessa</div>
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Canvas untuk efek kembang api -->
+    <canvas id="c"></canvas>
+    
+    <!-- Container untuk balon -->
+    <div id="balloon-container"></div>
+    
+    
+    <!-- Kontrol tombol - sudah mobile friendly -->
+    <div class="controls-container">
+        <button class="control-btn btn-music" id="musicBtn">
+            <i class="fas fa-volume-mute"></i> Play Music
+        </button>
+        <button class="control-btn btn-next" id="nextBtn">
+            <i class="fas fa-forward"></i> Lanjut
+        </button>
+    </div>
+    
+    <!-- Audio untuk musik -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="hbd lembut.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-443.wav" type="audio/wav">
+    </audio>
+
+    <script>
+        // Inisialisasi variabel global (tetap sama)
+        var w = (c.width = window.innerWidth),
+            h = (c.height = window.innerHeight),
+            ctx = c.getContext("2d"),
+            hw = w / 2, 
+            hh = h / 2,
+            opts = {
+                strings: ["HAPPY", "BIRTH", "DAY"],
+                charSize: Math.min(120, window.innerWidth * 0.15), // Responsif ukuran huruf
+                charSpacing: Math.min(120, window.innerWidth * 0.15),
+                lineHeight: Math.min(150, window.innerHeight * 0.15),
+
+                cx: w / 2,
+                cy: h / 2,
+
+                fireworkPrevPoints: 10,
+                fireworkBaseLineWidth: 5,
+                fireworkAddedLineWidth: 8,
+                fireworkSpawnTime: 200,
+                fireworkBaseReachTime: 30,
+                fireworkAddedReachTime: 30,
+                fireworkCircleBaseSize: 20,
+                fireworkCircleAddedSize: 10,
+                fireworkCircleBaseTime: 30,
+                fireworkCircleAddedTime: 30,
+                fireworkCircleFadeBaseTime: 10,
+                fireworkCircleFadeAddedTime: 5,
+                fireworkBaseShards: 5,
+                fireworkAddedShards: 5,
+                fireworkShardPrevPoints: 3,
+                fireworkShardBaseVel: 4,
+                fireworkShardAddedVel: 2,
+                fireworkShardBaseSize: 3,
+                fireworkShardAddedSize: 3,
+                gravity: 0.1,
+                upFlow: -0.1,
+                letterContemplatingWaitTime: 360,
+                balloonSpawnTime: 20,
+                balloonBaseInflateTime: 10,
+                balloonAddedInflateTime: 10,
+                balloonBaseSize: Math.min(20, window.innerWidth * 0.05),
+                balloonAddedSize: Math.min(20, window.innerWidth * 0.05),
+                balloonBaseVel: 0.4,
+                balloonAddedVel: 0.4,
+                balloonBaseRadian: -(Math.PI / 2 - 0.5),
+                balloonAddedRadian: -1,
+            },
+            calc = {
+                totalWidth:
+                    opts.charSpacing *
+                    Math.max(opts.strings[0].length, opts.strings[1].length),
+            },
+            Tau = Math.PI * 2,
+            TauQuarter = Tau / 4,
+            letters = [],
+            isMusicPlaying = false,
+            music = document.getElementById('backgroundMusic');
+
+        // Setup font dengan ukuran responsif
+        ctx.font = opts.charSize + "px Verdana";
+
+        // Class Letter (tetap sama persis)
+        function Letter(char, x, y) {
+            this.char = char;
+            this.x = x;
+            this.y = y;
+
+            this.dx = -ctx.measureText(char).width / 2;
+            this.dy = +opts.charSize / 2;
+
+            this.fireworkDy = this.y - hh;
+
+            var hue = (x / calc.totalWidth) * 360;
+
+            this.color = "hsl(hue,80%,50%)".replace("hue", hue);
+            this.lightAlphaColor = "hsla(hue,80%,light%,alp)".replace("hue", hue);
+            this.lightColor = "hsl(hue,80%,light%)".replace("hue", hue);
+            this.alphaColor = "hsla(hue,80%,50%,alp)".replace("hue", hue);
+
+            this.reset();
+        }
+
+        Letter.prototype.reset = function () {
+            this.phase = "firework";
+            this.tick = 0;
+            this.spawned = false;
+            this.spawningTime = (opts.fireworkSpawnTime * Math.random()) | 0;
+            this.reachTime =
+                (opts.fireworkBaseReachTime + opts.fireworkAddedReachTime * Math.random()) | 0;
+            this.lineWidth =
+                opts.fireworkBaseLineWidth + opts.fireworkAddedLineWidth * Math.random();
+            this.prevPoints = [[0, hh, 0]];
+        };
+
+        Letter.prototype.step = function () {
+            if (this.phase === "firework") {
+                if (!this.spawned) {
+                    ++this.tick;
+                    if (this.tick >= this.spawningTime) {
+                        this.tick = 0;
+                        this.spawned = true;
+                    }
+                } else {
+                    ++this.tick;
+
+                    var linearProportion = this.tick / this.reachTime,
+                        armonicProportion = Math.sin(linearProportion * TauQuarter),
+                        x = linearProportion * this.x,
+                        y = hh + armonicProportion * this.fireworkDy;
+
+                    if (this.prevPoints.length > opts.fireworkPrevPoints)
+                        this.prevPoints.shift();
+
+                    this.prevPoints.push([x, y, linearProportion * this.lineWidth]);
+
+                    var lineWidthProportion = 1 / (this.prevPoints.length - 1);
+
+                    for (var i = 1; i < this.prevPoints.length; ++i) {
+                        var point = this.prevPoints[i],
+                            point2 = this.prevPoints[i - 1];
+
+                        ctx.strokeStyle = this.alphaColor.replace(
+                            "alp",
+                            i / this.prevPoints.length
+                        );
+                        ctx.lineWidth = point[2] * lineWidthProportion * i;
+                        ctx.beginPath();
+                        ctx.moveTo(point[0], point[1]);
+                        ctx.lineTo(point2[0], point2[1]);
+                        ctx.stroke();
+                    }
+
+                    if (this.tick >= this.reachTime) {
+                        this.phase = "contemplate";
+
+                        this.circleFinalSize =
+                            opts.fireworkCircleBaseSize +
+                            opts.fireworkCircleAddedSize * Math.random();
+                        this.circleCompleteTime =
+                            (opts.fireworkCircleBaseTime +
+                            opts.fireworkCircleAddedTime * Math.random()) | 0;
+                        this.circleCreating = true;
+                        this.circleFading = false;
+
+                        this.circleFadeTime =
+                            (opts.fireworkCircleFadeBaseTime +
+                            opts.fireworkCircleFadeAddedTime * Math.random()) | 0;
+                        this.tick = 0;
+                        this.tick2 = 0;
+
+                        this.shards = [];
+
+                        var shardCount =
+                                (opts.fireworkBaseShards +
+                                opts.fireworkAddedShards * Math.random()) | 0,
+                            angle = Tau / shardCount,
+                            cos = Math.cos(angle),
+                            sin = Math.sin(angle),
+                            x = 1,
+                            y = 0;
+
+                        for (var i = 0; i < shardCount; ++i) {
+                            var x1 = x;
+                            x = x * cos - y * sin;
+                            y = y * cos + x1 * sin;
+
+                            this.shards.push(new Shard(this.x, this.y, x, y, this.alphaColor));
+                        }
+                    }
+                }
+            } else if (this.phase === "contemplate") {
+                ++this.tick;
+
+                if (this.circleCreating) {
+                    ++this.tick2;
+                    var proportion = this.tick2 / this.circleCompleteTime,
+                        armonic = -Math.cos(proportion * Math.PI) / 2 + 0.5;
+
+                    ctx.beginPath();
+                    ctx.fillStyle = this.lightAlphaColor
+                        .replace("light", 50 + 50 * proportion)
+                        .replace("alp", proportion);
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, armonic * this.circleFinalSize, 0, Tau);
+                    ctx.fill();
+
+                    if (this.tick2 > this.circleCompleteTime) {
+                        this.tick2 = 0;
+                        this.circleCreating = false;
+                        this.circleFading = true;
+                    }
+                } else if (this.circleFading) {
+                    ctx.fillStyle = this.lightColor.replace("light", 70);
+                    ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+
+                    ++this.tick2;
+                    var proportion = this.tick2 / this.circleFadeTime,
+                        armonic = -Math.cos(proportion * Math.PI) / 2 + 0.5;
+
+                    ctx.beginPath();
+                    ctx.fillStyle = this.lightAlphaColor
+                        .replace("light", 100)
+                        .replace("alp", 1 - armonic);
+                    ctx.arc(this.x, this.y, this.circleFinalSize, 0, Tau);
+                    ctx.fill();
+
+                    if (this.tick2 >= this.circleFadeTime) this.circleFading = false;
+                } else {
+                    ctx.fillStyle = this.lightColor.replace("light", 70);
+                    ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+                }
+
+                for (var i = 0; i < this.shards.length; ++i) {
+                    this.shards[i].step();
+
+                    if (!this.shards[i].alive) {
+                        this.shards.splice(i, 1);
+                        --i;
+                    }
+                }
+
+                if (this.tick > opts.letterContemplatingWaitTime) {
+                    this.phase = "balloon";
+
+                    this.tick = 0;
+                    this.spawning = true;
+                    this.spawnTime = (opts.balloonSpawnTime * Math.random()) | 0;
+                    this.inflating = false;
+                    this.inflateTime =
+                        (opts.balloonBaseInflateTime +
+                        opts.balloonAddedInflateTime * Math.random()) | 0;
+                    this.size =
+                        (opts.balloonBaseSize + opts.balloonAddedSize * Math.random()) | 0;
+
+                    var rad =
+                            opts.balloonBaseRadian + opts.balloonAddedRadian * Math.random(),
+                        vel = opts.balloonBaseVel + opts.balloonAddedVel * Math.random();
+
+                    this.vx = Math.cos(rad) * vel;
+                    this.vy = Math.sin(rad) * vel;
+                }
+            } else if (this.phase === "balloon") {
+                ctx.strokeStyle = this.lightColor.replace("light", 80);
+
+                if (this.spawning) {
+                    ++this.tick;
+                    ctx.fillStyle = this.lightColor.replace("light", 70);
+                    ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+
+                    if (this.tick >= this.spawnTime) {
+                        this.tick = 0;
+                        this.spawning = false;
+                        this.inflating = true;
+                    }
+                } else if (this.inflating) {
+                    ++this.tick;
+
+                    var proportion = this.tick / this.inflateTime,
+                        x = (this.cx = this.x),
+                        y = (this.cy = this.y - this.size * proportion);
+
+                    ctx.fillStyle = this.alphaColor.replace("alp", proportion);
+                    ctx.beginPath();
+                    generateBalloonPath(x, y, this.size * proportion);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x, this.y);
+                    ctx.stroke();
+
+                    ctx.fillStyle = this.lightColor.replace("light", 70);
+                    ctx.fillText(this.char, this.x + this.dx, this.y + this.dy);
+
+                    if (this.tick >= this.inflateTime) {
+                        this.tick = 0;
+                        this.inflating = false;
+                    }
+                } else {
+                    this.cx += this.vx;
+                    this.cy += this.vy += opts.upFlow;
+
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    generateBalloonPath(this.cx, this.cy, this.size);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(this.cx, this.cy);
+                    ctx.lineTo(this.cx, this.cy + this.size);
+                    ctx.stroke();
+
+                    ctx.fillStyle = this.lightColor.replace("light", 70);
+                    ctx.fillText(this.char, this.cx + this.dx, this.cy + this.dy + this.size);
+
+                    if (this.cy + this.size < -hh || this.cx < -hw || this.cy > hw)
+                        this.phase = "done";
+                }
+            }
+        };
+
+        // Class Shard (tetap sama)
+        function Shard(x, y, vx, vy, color) {
+            var vel =
+                opts.fireworkShardBaseVel + opts.fireworkShardAddedVel * Math.random();
+
+            this.vx = vx * vel;
+            this.vy = vy * vel;
+
+            this.x = x;
+            this.y = y;
+
+            this.prevPoints = [[x, y]];
+            this.color = color;
+
+            this.alive = true;
+
+            this.size =
+                opts.fireworkShardBaseSize + opts.fireworkShardAddedSize * Math.random();
+        }
+
+        Shard.prototype.step = function () {
+            this.x += this.vx;
+            this.y += this.vy += opts.gravity;
+
+            if (this.prevPoints.length > opts.fireworkShardPrevPoints)
+                this.prevPoints.shift();
+
+            this.prevPoints.push([this.x, this.y]);
+
+            var lineWidthProportion = this.size / this.prevPoints.length;
+
+            for (var k = 0; k < this.prevPoints.length - 1; ++k) {
+                var point = this.prevPoints[k],
+                    point2 = this.prevPoints[k + 1];
+
+                ctx.strokeStyle = this.color.replace("alp", k / this.prevPoints.length);
+                ctx.lineWidth = k * lineWidthProportion;
+                ctx.beginPath();
+                ctx.moveTo(point[0], point[1]);
+                ctx.lineTo(point2[0], point2[1]);
+                ctx.stroke();
+            }
+
+            if (this.prevPoints[0][1] > hh) this.alive = false;
+        };
+
+        // Fungsi untuk membuat path balon (tetap sama)
+        function generateBalloonPath(x, y, size) {
+            ctx.moveTo(x, y);
+            ctx.bezierCurveTo(
+                x - size / 2,
+                y - size / 2,
+                x - size / 4,
+                y - size,
+                x,
+                y - size
+            );
+            ctx.bezierCurveTo(x + size / 4, y - size, x + size / 2, y - size / 2, x, y);
+        }
+
+        // Fungsi animasi utama (tetap sama)
+        function anim() {
+            window.requestAnimationFrame(anim);
+
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.translate(hw, hh);
+
+            var done = true;
+            for (var l = 0; l < letters.length; ++l) {
+                letters[l].step();
+                if (letters[l].phase !== "done") done = false;
+            }
+
+            ctx.translate(-hw, -hh);
+
+            if (done) for (var l = 0; l < letters.length; ++l) letters[l].reset();
+        }
+
+        // Inisialisasi huruf dengan posisi responsif
+        for (var i = 0; i < opts.strings.length; ++i) {
+            for (var j = 0; j < opts.strings[i].length; ++j) {
+                letters.push(
+                    new Letter(
+                        opts.strings[i][j],
+                        j * opts.charSpacing +
+                        opts.charSpacing / 2 -
+                        (opts.strings[i].length * opts.charSize) / 2,
+                        i * opts.lineHeight +
+                        opts.lineHeight / 2 -
+                        (opts.strings.length * opts.lineHeight) / 2
+                    )
+                );
+            }
+        }
+
+        // Fungsi untuk membuat balon (disesuaikan untuk mobile)
+        const balloonContainer = document.getElementById("balloon-container");
+
+        function random(num) {
+            return Math.floor(Math.random() * num);
+        }
+
+        function getRandomStyles() {
+            var r = random(255);
+            var g = random(255);
+            var b = random(255);
+            var mt = random(150); // Kurangi margin top untuk mobile
+            var ml = random(30); // Kurangi margin left untuk mobile
+            var dur = random(5) + 5;
+            return `
+                background-color: rgba(${r},${g},${b},0.7);
+                color: rgba(${r},${g},${b},0.7); 
+                box-shadow: inset -7px -3px 10px rgba(${r - 10},${g - 10},${b - 10},0.7);
+                margin: ${mt}px 0 0 ${ml}px;
+                animation: float ${dur}s ease-in infinite
+            `;
+        }
+
+        function createBalloons(num) {
+            // Bersihkan container dulu
+            balloonContainer.innerHTML = '';
+            for (var i = num; i > 0; i--) {
+                var balloon = document.createElement("div");
+                balloon.className = "balloon";
+                balloon.style.cssText = getRandomStyles();
+                balloonContainer.append(balloon);
+            }
+        }
+
+        // Fungsi untuk mengatur musik
+        function toggleMusic() {
+            const musicBtn = document.getElementById('musicBtn');
+            
+            if (isMusicPlaying) {
+                music.pause();
+                musicBtn.classList.remove('music-playing');
+                musicBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Play Music';
+            } else {
+                music.play().catch(e => {
+                    console.log("Autoplay prevented, user interaction required");
+                });
+                musicBtn.classList.add('music-playing');
+                musicBtn.innerHTML = '<i class="fas fa-volume-up"></i> Stop Music';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // Fungsi untuk tombol lanjut
+        function goToNextPage() {
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            nextBtn.disabled = true;
+            
+            // Tambahkan efek transisi
+            document.body.style.opacity = '0.7';
+            
+            // Arahkan ke halaman berikutnya setelah delay
+            setTimeout(() => {
+                window.location.href = "ketiga.html";
+            }, 1500);
+        }
+
+        // Event listener saat halaman dimuat
+        window.addEventListener("load", () => {
+            // Update ukuran canvas setelah load
+            w = c.width = window.innerWidth;
+            h = c.height = window.innerHeight;
+            hw = w / 2;
+            hh = h / 2;
+            
+            // Sembunyikan loading screen setelah delay
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    
+                    // Mulai animasi kembang api
+                    setTimeout(() => {
+                        anim();
+                        ctx.font = opts.charSize + "px Verdana";
+                    }, 100);
+                    
+                    // Buat balon dengan jumlah disesuaikan untuk mobile
+                    const balloonCount = window.innerWidth < 600 ? 20 : 30;
+                    createBalloons(balloonCount);
+                    
+                    // Tampilkan kontrol tombol
+                    document.querySelector('.controls-container').style.opacity = '1';
+                }, 1000);
+            }, 2000);
+            
+            // Setup event listener untuk tombol
+            document.getElementById('musicBtn').addEventListener('click', toggleMusic);
+            document.getElementById('nextBtn').addEventListener('click', goToNextPage);
+            
+            // Setup event listener untuk resize window
+            window.addEventListener('resize', function() {
+                w = c.width = window.innerWidth;
+                h = c.height = window.innerHeight;
+                hw = w / 2;
+                hh = h / 2;
+                
+                // Update ukuran font
+                opts.charSize = Math.min(120, window.innerWidth * 0.15);
+                ctx.font = opts.charSize + "px Verdana";
+                
+                // Buat ulang balon dengan jumlah yang sesuai
+                const balloonCount = window.innerWidth < 600 ? 20 : 30;
+                createBalloons(balloonCount);
+            });
+        });
+
+        // Event listener untuk deteksi interaksi pengguna (untuk autoplay musik)
+        document.addEventListener('click', function initAudio() {
+            // Hanya dijalankan sekali
+            document.removeEventListener('click', initAudio);
+            
+            // Coba play musik jika tombol musik belum ditekan
+            setTimeout(() => {
+                if (!isMusicPlaying) {
+                    const musicBtn = document.getElementById('musicBtn');
+                    musicBtn.innerHTML = '<i class="fas fa-volume-up"></i> Play Music';
+                }
+            }, 1000);
+        });
+        
+        // Optimasi touch untuk mobile
+        document.addEventListener('touchstart', function(e) {
+            // Biarkan event normal berjalan
+        }, { passive: true });
+    </script>
+</body>
+</html>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun Tessa!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #87CEEB 0%, #E0F7FF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .sky-background {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FF);
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 100, 200, 0.2);
+        }
+
+        /* Awan yang lebih realistis */
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            box-shadow: 0 8px 5px rgba(0, 0, 0, 0.1);
+            opacity: 0.9;
+        }
+
+        .cloud:before, .cloud:after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud-1 {
+            width: 180px;
+            height: 70px;
+            top: 60px;
+            left: -200px;
+            animation: floatCloud 40s infinite linear;
+        }
+
+        .cloud-1:before {
+            width: 90px;
+            height: 90px;
+            top: -40px;
+            left: 20px;
+        }
+
+        .cloud-1:after {
+            width: 70px;
+            height: 70px;
+            top: -30px;
+            right: 30px;
+        }
+
+        .cloud-2 {
+            width: 160px;
+            height: 60px;
+            top: 130px;
+            left: -150px;
+            animation: floatCloud 35s infinite linear 10s;
+        }
+
+        .cloud-2:before {
+            width: 80px;
+            height: 80px;
+            top: -35px;
+            left: 15px;
+        }
+
+        .cloud-2:after {
+            width: 60px;
+            height: 60px;
+            top: -25px;
+            right: 25px;
+        }
+
+        .cloud-3 {
+            width: 200px;
+            height: 80px;
+            top: 40px;
+            right: -200px;
+            animation: floatCloud 45s infinite linear 5s;
+        }
+
+        .cloud-3:before {
+            width: 100px;
+            height: 100px;
+            top: -45px;
+            left: 25px;
+        }
+
+        .cloud-3:after {
+            width: 80px;
+            height: 80px;
+            top: -35px;
+            right: 35px;
+        }
+
+        .cloud-4 {
+            width: 140px;
+            height: 55px;
+            top: 160px;
+            right: -180px;
+            animation: floatCloud 38s infinite linear 15s;
+        }
+
+        .cloud-4:before {
+            width: 70px;
+            height: 70px;
+            top: -30px;
+            left: 10px;
+        }
+
+        .cloud-4:after {
+            width: 50px;
+            height: 50px;
+            top: -20px;
+            right: 20px;
+        }
+
+        .sun {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: #FFD700;
+            border-radius: 50%;
+            top: 30px;
+            right: 30px;
+            box-shadow: 0 0 40px #FFA500;
+            animation: sunGlow 4s infinite alternate;
+        }
+
+        .typewriter-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 0 0 20px 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 100, 200, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .typewriter-text {
+            font-size: 2.5rem;
+            color: #1E3A8A;
+            font-weight: 700;
+            margin-bottom: 30px;
+            min-height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 2.8rem;
+            background-color: #1E3A8A;
+            margin-left: 5px;
+            animation: blink 0.7s infinite;
+        }
+
+        .instruction {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+        }
+
+        .btn-lanjut {
+            background: linear-gradient(to right, #4F46E5, #3B82F6);
+            color: white;
+        }
+
+        .btn-lanjut:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(to right, #3B82F6, #4F46E5);
+        }
+
+        .btn-tidak {
+            background: linear-gradient(to right, #EF4444, #DC2626);
+            color: white;
+        }
+
+        .btn-tidak:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .warning-text {
+            color: #DC2626;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 30px;
+            padding: 15px;
+            border: 3px dashed #DC2626;
+            border-radius: 10px;
+            background-color: rgba(254, 226, 226, 0.8);
+            animation: shake 0.5s;
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #1E3A8A;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Balon yang lebih banyak dan menarik */
+        .balloon-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .balloon {
+            position: absolute;
+            border-radius: 50%;
+            bottom: -150px;
+            animation-timing-function: linear;
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .balloon:before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 120px;
+            background-color: rgba(255, 255, 255, 0.7);
+            bottom: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .balloon:after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            bottom: -125px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Warna-warni balon */
+        .balloon:nth-child(1) { background: linear-gradient(to bottom, #FF6B8B, #FF3D6A); left: 5%; animation: floatUp 25s infinite linear 0s; width: 65px; height: 80px; }
+        .balloon:nth-child(2) { background: linear-gradient(to bottom, #4F46E5, #3B3BC3); left: 15%; animation: floatUp 28s infinite linear 2s; width: 70px; height: 85px; }
+        .balloon:nth-child(3) { background: linear-gradient(to bottom, #10B981, #0D9668); left: 25%; animation: floatUp 22s infinite linear 4s; width: 60px; height: 75px; }
+        .balloon:nth-child(4) { background: linear-gradient(to bottom, #F59E0B, #D97706); left: 35%; animation: floatUp 30s infinite linear 1s; width: 75px; height: 90px; }
+        .balloon:nth-child(5) { background: linear-gradient(to bottom, #8B5CF6, #7C3AED); left: 45%; animation: floatUp 26s infinite linear 3s; width: 68px; height: 83px; }
+        .balloon:nth-child(6) { background: linear-gradient(to bottom, #EC4899, #DB2777); left: 55%; animation: floatUp 24s infinite linear 5s; width: 72px; height: 88px; }
+        .balloon:nth-child(7) { background: linear-gradient(to bottom, #06B6D4, #0891B2); left: 65%; animation: floatUp 27s infinite linear 2.5s; width: 63px; height: 78px; }
+        .balloon:nth-child(8) { background: linear-gradient(to bottom, #F97316, #EA580C); left: 75%; animation: floatUp 29s infinite linear 4.5s; width: 67px; height: 82px; }
+        .balloon:nth-child(9) { background: linear-gradient(to bottom, #A855F7, #9333EA); left: 85%; animation: floatUp 23s infinite linear 3.5s; width: 71px; height: 87px; }
+        .balloon:nth-child(10) { background: linear-gradient(to bottom, #84CC16, #65A30D); left: 95%; animation: floatUp 31s infinite linear 6s; width: 66px; height: 81px; }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(1100px); }
+        }
+
+        @keyframes sunGlow {
+            0% { box-shadow: 0 0 40px #FFA500; }
+            100% { box-shadow: 0 0 60px #FFA500, 0 0 80px #FFA500; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes floatUp {
+            0% { 
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% { 
+                transform: translateY(-500px) rotate(5deg);
+                opacity: 0.9;
+            }
+            100% { 
+                transform: translateY(-1000px) rotate(10deg);
+                opacity: 0;
+            }
+        }
+
+        .bird {
+            position: absolute;
+            color: #333;
+            font-size: 24px;
+            animation: fly 20s infinite linear;
+        }
+
+        .bird:nth-child(1) { top: 100px; animation-delay: 0s; }
+        .bird:nth-child(2) { top: 150px; animation-delay: 7s; }
+        .bird:nth-child(3) { top: 80px; animation-delay: 14s; }
+
+        @keyframes fly {
+            0% { left: -50px; transform: scaleX(1); }
+            49% { transform: scaleX(1); }
+            50% { left: 950px; transform: scaleX(-1); }
+            99% { transform: scaleX(-1); }
+            100% { left: -50px; transform: scaleX(1); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .typewriter-text {
+                font-size: 2rem;
+                min-height: 100px;
+            }
+            
+            .instruction {
+                font-size: 1.1rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .sky-background {
+                height: 200px;
+            }
+            
+            .cloud-1, .cloud-2, .cloud-3, .cloud-4 {
+                transform: scale(0.7);
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="bg-music" autoplay loop>
+        <source src="original sound - hylyriks_musicaldown.com_1770426473.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div class="sky-background">
+            <div class="sun"></div>
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+            <div class="cloud cloud-4"></div>
+            
+            <!-- Burung -->
+            <div class="bird"><i class="fas fa-dove"></i></div>
+            <div class="bird"><i class="fas fa-dove"></i></div>
+            <div class="bird"><i class="fas fa-dove"></i></div>
+            
+            <!-- Balloons Container -->
+            <div class="balloon-container">
+                <!-- 10 balon dengan warna berbeda -->
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+            </div>
+        </div>
+        
+        <div class="typewriter-container">
+            <div class="typewriter-text" id="typewriter-text"></div>
+            
+            <p class="instruction">Klik "Lanjut" untuk melihat halaman web ini...</p>
+            
+            <div class="buttons-container">
+                <button class="btn btn-lanjut" id="btn-lanjut">
+                    <i class="fas fa-forward"></i> Lanjut
+                </button>
+                <button class="btn btn-tidak" id="btn-tidak">
+                    <i class="fas fa-times"></i> Tidak
+                </button>
+            </div>
+            
+            <div class="warning-text hidden" id="warning-text">
+                Dilarang klik tidak! Bub !!!!
+            </div>
+            
+            <div class="footer">
+                Dibuat dengan ❤️ untuk Tessa di hari ulang tahunnya
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            //musik
+            const bgMusic = document.getElementById("bg-music");
+
+function playMusic() {
+    bgMusic.play().catch(() => {});
+}
+
+window.addEventListener("load", playMusic);
+document.addEventListener("click", playMusic);
+
+
+
+            // Elemen DOM
+            const typewriterText = document.getElementById('typewriter-text');
+            const btnLanjut = document.getElementById('btn-lanjut');
+            const btnTidak = document.getElementById('btn-tidak');
+            const warningText = document.getElementById('warning-text');
+            
+            // Teks untuk efek mesin ketik
+            const message = "Selamat ulang tahun Tessa ...";
+            let charIndex = 0;
+            let isDeleting = false;
+            let isEnd = false;
+            
+            // Fungsi untuk efek mesin ketik
+            function typeEffect() {
+                const currentText = message.substring(0, charIndex);
+                typewriterText.innerHTML = currentText + `<span class="cursor"></span>`;
+                
+                if (!isDeleting && charIndex < message.length) {
+                    // Mengetik
+                    charIndex++;
+                    setTimeout(typeEffect, 100);
+                } else if (!isDeleting && charIndex === message.length) {
+                    // Selesai mengetik, tunggu sebentar lalu mulai menghapus
+                    isEnd = true;
+                    setTimeout(() => {
+                        isDeleting = true;
+                        setTimeout(typeEffect, 1500);
+                    }, 1500);
+                } else if (isDeleting && charIndex > 0) {
+                    // Menghapus
+                    charIndex--;
+                    setTimeout(typeEffect, 50);
+                } else {
+                    // Selesai menghapus, mulai lagi dari awal
+                    isDeleting = false;
+                    isEnd = false;
+                    setTimeout(typeEffect, 500);
+                }
+            }
+            
+            // Memulai efek mesin ketik
+            setTimeout(typeEffect, 1000);
+            
+            // Event listener untuk tombol "Lanjut"
+            btnLanjut.addEventListener('click', function() {
+                // Animasi tombol
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // Efek konfeti sebelum pindah halaman
+                createConfetti();
+                
+                // Tampilkan pesan transisi
+                typewriterText.innerHTML = `Mengarahkan ke kejutan... <i class="fas fa-spinner fa-spin"></i>`;
+                
+                // Setelah 2 detik, arahkan ke halaman kedua.html
+                setTimeout(() => {
+                    window.location.href = "kedua.html";
+                }, 2000);
+            });
+            
+            // Event listener untuk tombol "Tidak"
+            btnTidak.addEventListener('click', function() {
+                // Animasi tombol
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+                
+                // Tampilkan peringatan
+                warningText.classList.remove('hidden');
+                
+                // Tambahkan efek shake pada tombol
+                this.style.animation = 'shake 0.5s';
+                
+                // Efek balon meledak
+                explodeBalloons();
+                
+                // Setelah animasi selesai, hapus animasi
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 500);
+                
+                // Sembunyikan tombol "Tidak" setelah beberapa detik
+                setTimeout(() => {
+                    this.classList.add('hidden');
+                }, 3000);
+            });
+            
+            // Efek hover pada tombol
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+            
+            // Fungsi untuk efek konfeti
+            function createConfetti() {
+                const colors = ['#FF6B8B', '#4F46E5', '#10B981', '#F59E0B', '#8B5CF6'];
+                const container = document.querySelector('.typewriter-container');
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'absolute';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.zIndex = '1000';
+                    confetti.style.opacity = '0.9';
+                    
+                    container.appendChild(confetti);
+                    
+                    // Animasi jatuh
+                    const animation = confetti.animate([
+                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                    ], {
+                        duration: 1000 + Math.random() * 2000,
+                        easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+                    });
+                    
+                    // Hapus confetti setelah animasi selesai
+                    animation.onfinish = () => confetti.remove();
+                }
+            }
+
+            
+            
+            // Fungsi untuk efek balon meledak
+            function explodeBalloons() {
+                const balloons = document.querySelectorAll('.balloon');
+                balloons.forEach((balloon, index) => {
+                    setTimeout(() => {
+                        balloon.style.animation = 'none';
+                        balloon.style.transition = 'all 0.3s';
+                        balloon.style.transform = 'scale(1.5)';
+                        balloon.style.opacity = '0';
+                        
+                        // Tambahkan efek pecah
+                        setTimeout(() => {
+                            balloon.style.display = 'none';
+                        }, 300);
+                    }, index * 100);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
